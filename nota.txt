@@ -1,0 +1,26 @@
+COSAS PARA IMPLEMENTAR EN LA BASE DE DATOS :
+empleado :
+-nombre, 
+-cargo,
+-salario,
+-fecha_de_ingreso
+
+proveedores :
+-nombre,
+-dirección,
+-teléfono, 
+-productos que proveedores
+-correo
+
+factura:
+-número de factura,
+-monto total,
+-fecha de emisión
+-nombre cliente
+
+productos:
+-nombre,
+- precio, 
+-tamaño,
+- color.
+

@@ -1,9 +1,10 @@
+// cFecha.hpp
 #ifndef CFECHA_HPP
 #define CFECHA_HPP
 #include <ctime>
+#include <cstdio>
 
-class cFecha
-{
+class cFecha {
 private:
     int dia;
     int mes;
@@ -29,7 +30,7 @@ public:
     int getSeg();
     int getHora();
 
-    void setDia(int day) ;
+    void setDia(int day);
     void setMes(int month);
     void setYear(int year);
     void setHora(int hour);
@@ -37,6 +38,12 @@ public:
     void setSeg(int second);
 
     void copiadoGeneral(const cFecha *otra);
+
+    // Método que llena un puntero char* con la fecha formateada
+    void getFecha(char* fecha) const {
+        // Asegúrate de que `fecha` tiene suficiente memoria asignada
+        snprintf(fecha, 20, "%02d/%02d/%04d %02d:%02d:%02d", dia, mes, year, hora, min, seg);
+    }
 };
 
 #endif

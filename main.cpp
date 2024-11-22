@@ -1,8 +1,13 @@
 //#include "cPrenda.hpp"
 #include "cAlmacen.hpp"
 #include "cListaAlmacen.hpp"
-
+#include "cCliente.hpp"
+#include "cProveedor.hpp"
+#include "cFecha.hpp"
 #include <iostream>
+#include <string>
+#include <ctime>
+#include <cstdio>
 #ifdef _WIN32
     #include <windows.h>
     #define CLEAR_COMMAND "cls"
@@ -87,8 +92,8 @@ void imprimir_almacen()
 		std::cout << " \x1B[m" << std::endl;
 }
 
-void imprimir()
-{
+//void imprimir()
+//{
 	//cPrenda prenda1;
 	/*cAlmacen almacen1;
 
@@ -189,10 +194,18 @@ void imprimir()
 	*/
 
 	
-}
+//}
 
 int main()
 {
+	
+    cCliente cliente("Juan", "CLI001", 5, 7);
+    cliente.print();
+
+    cProveedor proveedor("ABC SA", "PRV001", 7, 7);
+    proveedor.print();
+
+
 	//imprimir();
 	/*
 	cAlmacen primero;
@@ -226,10 +239,10 @@ int main()
 	std::cout<<"imprimir primero "<<std::endl;
 	primero.print();
 	*/
-	cListaAlmacen nuevo[2];
+	//cListaAlmacen nuevo[2];
 
-	nuevo[1].print();
-	nuevo[0].print();
+	//nuevo[1].print();
+	//nuevo[0].print();
 
 
     return 0;
