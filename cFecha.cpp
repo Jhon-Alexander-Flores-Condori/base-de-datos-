@@ -1,83 +1,127 @@
 #include "cFecha.hpp"
 #include <iostream>
-#include <ctime>
 
-cFecha::cFecha(int day, int month, int year, int valor)
-    : dia(day), mes(month), year(year), hora(valor), min(valor), seg(valor) {}
-
-void cFecha::print() const
-{
-    std::cout << "dd/mm/yy : " << dia << "/" << mes << "/" << year << std::endl;
-    std::cout << "hh:mm:ss : " << hora << ":" << min << ":" << seg << std::endl;
+cFecha::cFecha(int day, int month, int year, int valor) {
+    // Inicialización con valores por defecto o proporcionados
+    dia = (day > 0 && day <= 31) ? day : 1;
+    mes = (month > 0 && month <= 12) ? month : 1;
+    year = (year > 0) ? year : 2024;
+    
+    // Inicializar hora con el valor proporcionado o por defecto
+    hora = (valor > 0 && valor < 24) ? valor : 1;
+    min = (valor > 0 && valor < 60) ? valor : 1;
+    seg = (valor > 0 && valor < 60) ? valor : 1;
 }
 
 cFecha::cFecha(const cFecha &nuevo) {
-    copiadoGeneral(&nuevo);  // Copia los miembros del objeto 'nuevo'
+    copiadoGeneral(&nuevo);
 }
 
 cFecha& cFecha::operator=(const cFecha& otra) {
-    if (this != &otra) {  // Evitar la auto-asignación
-        copiadoGeneral(&otra);  // Copia los miembros del objeto 'otra'
+    if(&otra != this) {
+        copiadoGeneral(&otra);
     }
-    return *this;  // Retorna la referencia al objeto actual
+    return *this;
 }
 
-void cFecha::copiadoGeneral(const cFecha* otra) {
-    // Copiar los valores de los miembros
-    dia = (*otra).dia;
-    mes = (*otra).mes;
-    year = (*otra).year;
-    hora = (*otra).hora;
-    min = (*otra).min;
-    seg = (*otra).seg;
+void cFecha::actualizarFecha() {
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    
+    year = 1900 + ltm->tm_year;
+    mes = 1 + ltm->tm_mon;
+    dia = ltm->tm_mday;
+    hora = ltm->tm_hour;
+    min = ltm->tm_min;
+    seg = ltm->tm_sec;
 }
 
-void cFecha::actualizarFecha()
-{
-    std::time_t tiempoActual = std::time(nullptr);
-    std::tm* tiempoLocal = std::localtime(&tiempoActual);
-
-    dia = tiempoLocal->tm_mday;//(*tiempoLocal).tm_day
-    mes = tiempoLocal->tm_mon + 1;
-    year = tiempoLocal->tm_year + 1900;
-    hora = tiempoLocal->tm_hour;
-    min = tiempoLocal->tm_min;
-    seg = tiempoLocal->tm_sec;
+void cFecha::print() const {
+    std::cout << dia << "/" << mes << "/" << year;
+    std::cout << " " << hora << ":" << min << ":" << seg << std::endl;
 }
 
+// Implementación de getters
+int cFecha::getDia() {
+    return dia;
+}
 
-int cFecha::getDia()
-    { return dia; }
+int cFecha::getMes() {
+    return mes;
+}
 
-int cFecha::getMes()
-    { return mes; }
+int cFecha::getYear() {
+    return year;
+}
 
-int cFecha::getYear()
-    { return year; }
+int cFecha::getHora() {
+    return hora;
+}
 
-int cFecha::getMin()
-    { return min; }
+int cFecha::getMin() {
+    return min;
+}
 
-int cFecha::getSeg()
-    { return seg; }
+int cFecha::getSeg() {
+    return seg;
+}
 
-int cFecha::getHora()
-    { return hora; }
+// Implementación de setters con validación
+void cFecha::setDia(int day) {
+    if(day > 0 && day <= 31) {
+        dia = day;
+    } else {
+        std::cout << "Dia invalido. Se mantiene el valor actual." << std::endl;
+    }
+}
 
-void cFecha::setDia(int day)
-    { dia = day; }
+void cFecha::setMes(int month) {
+    if(month > 0 && month <= 12) {
+        mes = month;
+    } else {
+        std::cout << "Mes invalido. Se mantiene el valor actual." << std::endl;
+    }
+}
 
-void cFecha::setMes(int month)
-    { mes = month; }
+void cFecha::setYear(int yr) {
+    if(yr > 0) {
+        year = yr;
+    } else {
+        std::cout << "Anno invalido. Se mantiene el valor actual." << std::endl;
+    }
+}
 
-void cFecha::setYear(int year)
-    { this->year = year; }
+void cFecha::setHora(int hour) {
+    if(hour >= 0 && hour < 24) {
+        hora = hour;
+    } else {
+        std::cout << "Hora invalida. Se mantiene el valor actual." << std::endl;
+    }
+}
 
-void cFecha::setHora(int hour)
-    { hora = hour; }
+void cFecha::setMin(int minute) {
+    if(minute >= 0 && minute < 60) {
+        min = minute;
+    } else {
+        std::cout << "Minuto invalido. Se mantiene el valor actual." << std::endl;
+    }
+}
 
-void cFecha::setMin(int minute)
-    { min = minute; }
+void cFecha::setSeg(int second) {
+    if(second >= 0 && second < 60) {
+        seg = second;
+    } else {
+        std::cout << "Segundo invalido. Se mantiene el valor actual." << std::endl;
+    }
+}
 
-void cFecha::setSeg(int second)
-    { seg = second; }
+void cFecha::copiadoGeneral(const cFecha *otra) {
+    if(otra != nullptr) {
+        dia = otra->dia;
+        mes = otra->mes;
+        year = otra->year;
+        hora = otra->hora;
+        min = otra->min;
+        seg = otra->seg;
+    }
+}
