@@ -1,4 +1,4 @@
-#ifndef CFACTURA_HPP
+/*#ifndef CFACTURA_HPP
 #define CFACTURA_HPP
 
 #include "cComprobantePago.hpp"
@@ -31,3 +31,4 @@ public:
 };
 
 #endif
+*/

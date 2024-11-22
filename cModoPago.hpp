@@ -1,4 +1,4 @@
-// cModoPago.hpp
+/*// cModoPago.hpp
 #ifndef CMODOPAGO_HPP
 #define CMODOPAGO_HPP
 
@@ -41,3 +41,4 @@ protected:
     int contador(const char* cadena);
 };
 #endif
+*/
