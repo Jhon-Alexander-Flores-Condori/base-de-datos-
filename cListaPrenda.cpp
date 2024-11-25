@@ -53,7 +53,7 @@ bool cListaPrenda::llenado_prenda(cPrenda * nuevo, int value)
 {
     if(llenado_size(value))
     {
-        crear_memoria(size_storage, &manyClothes);
+        crear_memoria();
         for(int i=0;i<size_storage;i++)
         {
             *(manyClothes+i) = *(nuevo+i);
@@ -166,12 +166,12 @@ cPrenda* cListaPrenda::getStorage()
 {
     return manyClothes;
 }
-char* cListaPrenda::getMaterial()
+const char* cListaPrenda::getMaterial()
 {
     return material;
 }
 
-char* cListaPrenda::getCodigo()
+const char* cListaPrenda::getCodigo()
 {
     return codigo;
 }
@@ -214,7 +214,7 @@ void cListaPrenda::buscarTalla(char * codigo, int * temp)//40
 
         //direccion de memoria
         cPrenda * direccion = (manyClothes + i);   //manyStorages+i)->codigo;
-        char *cadena = (*direccion).getTalla();
+        const char *cadena = (*direccion).getTalla();
         int tope = (*direccion).getSize_talla();
 
         for(int a =0;a<tope;a++)
@@ -246,7 +246,7 @@ void cListaPrenda::buscarFecha(char * codigo,int fin, int inicio, int* temp)
         bool flag = true;
 
         //direccion de memoria
-        char *direccion = (*(manyClothes + i)).cadena_fecha;   //manyStorages+i)->codigo;
+        const char *direccion = (*(manyClothes + i)).getFecha();   //manyStorages+i)->codigo;
 
         for(int a =0;a<intervalo;a++, inicio++)
         {
@@ -278,7 +278,7 @@ void cListaPrenda::buscarColor(char * codigo, int * temp)//40
 
         //direccion de memoria
         cPrenda * direccion = (manyClothes + i);   //manyStorages+i)->codigo;
-        char *cadena = (*direccion).getColor();
+        const char *cadena = (*direccion).getColor();
         int tope = (*direccion).getSize_color();
 
         for(int a =0;a<tope;a++)
@@ -313,7 +313,7 @@ bool cListaPrenda::addContent(cPrenda *nuevo, int add)
 
     size_storage +=add;
 
-    crear_memoria(size_storage, &temp);
+    crear_memoria_np(size_storage, &temp);
 
     for(int i=0;i<(oldSize);i++)
     {
@@ -325,12 +325,40 @@ bool cListaPrenda::addContent(cPrenda *nuevo, int add)
         *(temp+oldSize+i) = *(nuevo+i);
     }
 
-    liberar_memoria(&manyClothes);
+    liberar_memoria();
 
     manyClothes = temp;
 
     return true;
 
+}
+
+void cListaPrenda::crear_memoria_np(int tam, cPrenda ** destino)
+{
+    if(*destino != nullptr)
+    {
+        liberar_memoria_np(destino);
+    }
+
+    if (tam > 0) 	//nombre
+	{	*destino = new cPrenda[tam]; }
+	else
+	{
+		*destino = nullptr;
+		std::cout<<"array = 0 bytes?"<< std::endl;
+	}
+}
+
+void cListaPrenda::liberar_memoria_np(cPrenda ** target)
+{
+    if (*target != nullptr) {
+        delete[] *target; // Libera la memoria asignada a nombre
+        *target = nullptr; // Opcional: poner el puntero a nullptr para evitar accesos futuros
+    }
+    else
+    {
+        std::cout<<"Already empty!"<<std::endl;
+    }
 }
 
 bool cListaPrenda::deleteContent(int begin, int end)//index, 3 a 4, entonce 2 a 3includio
@@ -344,7 +372,7 @@ bool cListaPrenda::deleteContent(int begin, int end)//index, 3 a 4, entonce 2 a 
     {   return false;   }
 
     size_storage-=intervalo;
-    crear_memoria(size_storage, &temp);
+    crear_memoria_np(size_storage, &temp);
 
     for(int i=0;i<oldSize;i++)
     {
@@ -356,7 +384,8 @@ bool cListaPrenda::deleteContent(int begin, int end)//index, 3 a 4, entonce 2 a 
         tempIndex++;
     }
 
-    liberar_memoria(&manyClothes);
+    liberar_memoria();
+
     manyClothes = temp;
     return true;
 }
@@ -396,18 +425,18 @@ void cListaPrenda::crear_memoria_arrays(int tam, char **destino)
 	}
 }
 
-void cListaPrenda::crear_memoria(int tam, cPrenda **destino)
+void cListaPrenda::crear_memoria()
 {
-    if( *destino != nullptr)
-    {   liberar_memoria(destino);    }
+    if( manyClothes!= nullptr)
+    {   liberar_memoria();    }
 
-    if(tam>=1)
+    if(size_storage>=1)
     {
-        *destino = new cPrenda[tam];
+        manyClothes= new cPrenda[size_storage];
     }
     else
     {
-        *destino = nullptr;
+        manyClothes = nullptr;
         std::cout<<"size no valid -- no arrange of new memory in manyStorages"<<std::endl;
     }
 
@@ -424,12 +453,12 @@ void cListaPrenda::liberar_arrays(char **target)
         std::cout<<"Already empty!"<<std::endl;
     }
 }
-void cListaPrenda::liberar_memoria(cPrenda **target)
+void cListaPrenda::liberar_memoria()
 {
-    if(*target != nullptr)
+    if(manyClothes != nullptr)
     {
-        delete[] *target;
-        *target = nullptr;
+        delete[] manyClothes;
+        manyClothes = nullptr;
     }
     else
     {
@@ -440,7 +469,7 @@ void cListaPrenda::liberar_memoria(cPrenda **target)
 
 cListaPrenda::~cListaPrenda()
 {
-    liberar_memoria(&manyClothes);
+    liberar_memoria();
     liberar_arrays(&codigo);
     liberar_arrays(&material);
 }
