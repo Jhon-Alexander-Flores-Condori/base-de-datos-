@@ -1,96 +1,195 @@
 #include "cProveedor.hpp"
 #include <iostream>
+#include <iomanip>
 
-cProveedor::cProveedor() : cPersona() {
-    rubro = nullptr;
-    size_rubro = -1;
+// Constructor por defecto
+cProveedor::cProveedor() : cPersona()
+{
+    asignar_nullptr();
+    size_tipo_servicio = -1;
+    size_especialidad = -1;
+    tarifa = 0.0;
 }
 
-cProveedor::cProveedor(char* name, char* code, char* rub, int tam_nom, int tam_cod, int tam_rub) 
-    : cPersona(name, code, tam_nom, tam_cod) {
-    rubro = nullptr;
-    size_rubro = -1;
-    
-    if(llenado_rubro(rub, tam_rub)) {
-        std::cout << "RUBRO LLENADO CON EXITO" << std::endl;
-    } else {
-        std::cout << "RUBRO no LLENADO CON EXITO" << std::endl;
+// Constructor con parámetros
+cProveedor::cProveedor(char* name, char* code, int tam_nom, int tam_cod) 
+    : cPersona(name, code, tam_nom, tam_cod)
+{
+    asignar_nullptr();
+    size_tipo_servicio = -1;
+    size_especialidad = -1;
+    tarifa = 0.0;
+}
+
+// Constructor de copia
+cProveedor::cProveedor(const cProveedor &obj) : cPersona(obj)
+{
+    asignar_nullptr();
+
+    if(obj.tipo_servicio != nullptr) {
+        llenado_tipo_servicio(obj.tipo_servicio, obj.size_tipo_servicio);
     }
-}
 
-cProveedor::cProveedor(const cProveedor& obj) : cPersona(obj) {
-    rubro = nullptr;
-    if(asignarValores(&obj)) {
-        std::cout << "SE LOGRO COPIA PROVEEDOR" << std::endl;
-    } else {
-        std::cout << "NO SE LOGRO COPIA PROVEEDOR" << std::endl;
+    if(obj.especialidad != nullptr) {
+        llenado_especialidad(obj.especialidad, obj.size_especialidad);
     }
+
+    tarifa = obj.tarifa;
 }
 
-cProveedor& cProveedor::operator=(const cProveedor& obj) {
+// Operador de asignación
+cProveedor& cProveedor::operator=(const cProveedor &obj)
+{
     if(this != &obj) {
+        // Llamar al operador de asignación de la clase base
         cPersona::operator=(obj);
-        if(asignarValores(&obj)) {
-            std::cout << "SE LOGRO ASIGNACION PROVEEDOR" << std::endl;
-        } else {
-            std::cout << "NO SE LOGRO ASIGNACION PROVEEDOR" << std::endl;
+
+        // Liberar memoria existente
+        liberar(&tipo_servicio);
+        liberar(&especialidad);
+
+        if(obj.tipo_servicio != nullptr) {
+            llenado_tipo_servicio(obj.tipo_servicio, obj.size_tipo_servicio);
         }
+
+        if(obj.especialidad != nullptr) {
+            llenado_especialidad(obj.especialidad, obj.size_especialidad);
+        }
+
+        tarifa = obj.tarifa;
     }
     return *this;
 }
 
-void cProveedor::print() {
+// Método para asignar nullptr a los punteros
+void cProveedor::asignar_nullptr()
+{
+    tipo_servicio = nullptr;
+    especialidad = nullptr;
+}
+
+// Método para validar y asignar tamaño de tipo de servicio
+bool cProveedor::llenado_size_tipo_servicio(int size, char* cadena)
+{
+    if(size <= 1)
+    {
+        size = contador(cadena);
+        if(size <= 1)
+        {
+            size_tipo_servicio = -1;
+            std::cout << "CADENA DE TIPO DE SERVICIO DE LONGITUD 0 INVIABLE" << std::endl;
+            return false;
+        }
+    }
+
+    size_tipo_servicio = size;
+    return true;
+}
+
+// Método para llenar tipo de servicio
+bool cProveedor::llenado_tipo_servicio(char* serv, int size)
+{
+    if(serv != nullptr)
+    {
+        if(tipo_servicio != nullptr) 
+            liberar(&tipo_servicio);
+
+        if(llenado_size_tipo_servicio(size, serv))
+        {
+            crear_memoria(size_tipo_servicio, &tipo_servicio);
+            copiar(serv, tipo_servicio, size_tipo_servicio);
+            return true;
+        }
+    }
+    std::cout << "ERROR AL LLENAR TIPO DE SERVICIO" << std::endl;
+    return false;
+}
+
+// Método para llenar especialidad
+bool cProveedor::llenado_especialidad(char* espec, int size)
+{
+    if(espec != nullptr)
+    {
+        if(especialidad != nullptr) 
+            liberar(&especialidad);
+
+        if(llenado_size_tipo_servicio(size, espec))
+        {
+            crear_memoria(size_especialidad, &especialidad);
+            copiar(espec, especialidad, size_especialidad);
+            return true;
+        }
+    }
+    std::cout << "ERROR AL LLENAR ESPECIALIDAD" << std::endl;
+    return false;
+}
+
+// Método para establecer tarifa
+void cProveedor::setTarifa(double _tarifa)
+{
+    tarifa = _tarifa;
+}
+
+// Método para imprimir información del proveedor
+void cProveedor::print()
+{
+    // Llamar al método print de la clase base
     cPersona::print();
-    if(rubro != nullptr) {
-        std::cout << "RUBRO: " << rubro << " tam:" << size_rubro << std::endl;
-    } else {
-        std::cout << "Rubro no asignado (nullptr)" << std::endl;
+
+    // Imprimir información adicional de proveedor
+    if (tipo_servicio != nullptr)
+    {
+        std::cout << "TIPO DE SERVICIO: " << tipo_servicio 
+                  << " tam:" << size_tipo_servicio << std::endl;
     }
-}
-
-bool cProveedor::llenado_rubro(char* rub, int size) {
-    fecha.actualizarFecha();
-    if(rub != nullptr) {
-        if(rubro != nullptr) {
-            delete[] rubro;
-        }
-        
-        if(size <= 1) {
-            size = contador(rub);
-            if(size <= 1) {
-                std::cout << "CADENA DE LONGITUD 0 INVIABLE" << std::endl;
-                return false;
-            }
-        }
-        
-        size_rubro = size;
-        rubro = new char[size_rubro];
-        copiar(rub, rubro, size_rubro);
-        return true;
+    else
+    {
+        std::cout << "Tipo de servicio no asignado (nullptr)" << std::endl;
     }
-    return false;
-}
 
-bool cProveedor::asignarValores(const cProveedor* obj) {
-    if(obj->rubro != nullptr) {
-        return llenado_rubro(obj->rubro, obj->size_rubro);
+    if (especialidad != nullptr)
+    {
+        std::cout << "ESPECIALIDAD: " << especialidad 
+                  << " tam:" << size_especialidad << std::endl;
     }
-    return false;
-}
-
-void cProveedor::ultimoAcceso() {
-    // Implementación específica para proveedor
-    cPersona::ultimoAcceso();
-    std::cout << "Rubro del proveedor: " << rubro << std::endl;
-}
-
-const char* cProveedor::getRubro() {
-    return rubro;
-}
-
-cProveedor::~cProveedor() {
-    if(rubro != nullptr) {
-        delete[] rubro;
-        rubro = nullptr;
+    else
+    {
+        std::cout << "Especialidad no asignada (nullptr)" << std::endl;
     }
+
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << "TARIFA: $" << tarifa << std::endl;
+}
+
+// Destructor
+cProveedor::~cProveedor()
+{
+    liberar(&tipo_servicio);
+    liberar(&especialidad);
+}
+
+// Getters
+const char* cProveedor::getTipoServicio()
+{
+    return tipo_servicio;
+}
+
+const char* cProveedor::getEspecialidad()
+{
+    return especialidad;
+}
+
+double cProveedor::getTarifa()
+{
+    return tarifa;
+}
+
+int cProveedor::getSize_tipo_servicio()
+{
+    return size_tipo_servicio;
+}
+
+int cProveedor::getSize_especialidad()
+{
+    return size_especialidad;
 }
