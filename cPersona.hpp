@@ -7,17 +7,16 @@ class cPersona {
 protected: //atributos
     cFecha fecha;
     char* nombre;
-    char* codigo; //id
-    char* cadena_fecha;
+    char* codigo; 
     char* telefono;
     char* correo;
     char* direccion;
     int edad;
-    int size_nom;
-    int size_cod;
-    int size_tel;
+    int size_nombre;
+    int size_codigo;
+    int size_telefono;
     int size_correo;
-    int size_dir;
+    int size_direccion;
 
 public:
     virtual ~cPersona();
@@ -29,11 +28,11 @@ public:
     virtual void print();
     bool llenado_nombre(char* name, int size = 0);
     bool llenado_codigo(char* code, int size = 0);
-    bool llenado_telefono(char* tel, int size = 0);
+    bool llenado_telefono(char* telefono, int size = 0);
     bool llenado_correo(char* email, int size = 0);
-    bool llenado_direccion(char* dir, int size = 0);
-    bool llenado_size_nom(int size, char* cadena = nullptr);
-    bool llenado_size_cod(int size, char* cadena = nullptr);
+    bool llenado_direccion(char* direccion, int size = 0);
+    bool llenado_size_nombre(int size, char* cadena = nullptr);
+    bool llenado_size_codigo(int size, char* cadena = nullptr);
     void llenado_fecha();
     void setEdad(int _edad);
 
