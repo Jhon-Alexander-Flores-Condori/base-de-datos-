@@ -122,6 +122,7 @@ bool cListaPrenda::llenado_size(int valor)
 {
     if(valor<1)
     {
+        size_storage = -1;
         std::cout<<"invalido"<<std::endl;
         return false;
     }
@@ -137,7 +138,8 @@ bool cListaPrenda::llenado_size_cod(int size, char * cadena)
 		size = contador(cadena);
 		if(size<=1) // still 0, no se crea nada
 		{
-			std::cout<<"CADENA DE LONGITUD 0 INVIABLE"<<std::endl;
+			size_code = -1;
+            std::cout<<"CADENA DE LONGITUD 0 INVIABLE"<<std::endl;
 			return false;
 		}
 	}
@@ -153,7 +155,8 @@ bool cListaPrenda::llenado_size_material(int size, char * cadena)
 		size = contador(cadena);
 		if(size<=1) // still 0, no se crea nada
 		{
-			std::cout<<"CADENA DE LONGITUD 0 INVIABLE"<<std::endl;
+			size_material =-1;
+            std::cout<<"CADENA DE LONGITUD 0 INVIABLE"<<std::endl;
 			return false;
 		}
 	}
@@ -390,40 +393,6 @@ bool cListaPrenda::deleteContent(int begin, int end)//index, 3 a 4, entonce 2 a 
     return true;
 }
 
-void cListaPrenda::copiar( char *root, char *destino, int tam)
-{
-	for(int i=0;i<tam;i++)
-	{
-		*(destino+i) = *(root+i);
-	}
-	*(destino+(tam-1)) = '\0';//asegurar
-}
-
-int cListaPrenda::contador(const char * cadena)
-{
-	int fin =0;
-	while( *(cadena+fin) != '\0')
-	{
-		fin++;
-	}
-	return fin+1;
-}
-
-void cListaPrenda::crear_memoria_arrays(int tam, char **destino)
-{
-    if(*destino != nullptr)
-    {
-        liberar_arrays(destino);
-    }
-
-    if (tam > 0) 	//nombre
-	{	*destino = new char[tam]; }
-	else
-	{
-		*destino = nullptr;
-		std::cout<<"array = 0 bytes?"<< std::endl;
-	}
-}
 
 void cListaPrenda::crear_memoria()
 {
@@ -442,17 +411,6 @@ void cListaPrenda::crear_memoria()
 
 }
 
-void cListaPrenda::liberar_arrays(char **target)
-{
-    if (*target != nullptr) {
-        delete[] *target; // Libera la memoria asignada a nombre
-        *target = nullptr; // Opcional: poner el puntero a nullptr para evitar accesos futuros
-    }
-    else
-    {
-        std::cout<<"Already empty!"<<std::endl;
-    }
-}
 void cListaPrenda::liberar_memoria()
 {
     if(manyClothes != nullptr)
@@ -464,7 +422,6 @@ void cListaPrenda::liberar_memoria()
     {
         std::cout<<"Already empty!"<<std::endl;
     }
-
 }
 
 cListaPrenda::~cListaPrenda()
